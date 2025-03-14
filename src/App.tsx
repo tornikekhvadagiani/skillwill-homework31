@@ -1,8 +1,8 @@
 import "./App.css";
-import { Counter } from "./store/users/User";
+import {  User } from "./store/users/User";
 
 function App() {
-  return <><Counter/></>;
+  return <><User/></>;
 }
 
 export default App;

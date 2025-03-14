@@ -1,23 +1,21 @@
-import { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { decrement, increment } from './user.slice'
-import { RootState } from '../store'
-import { fetchUsers } from './action'
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { decrement, increment } from "./user.slice";
+import { useAppSelector } from "../../hooks/redux";
+import { fetchUsers } from "./action";
+import { AppDispatch } from "../store";
 
-export function Counter() {
-  const dispatch = useDispatch()
-
-  // useSelector-ით ვიღებთ state-ის მონაცემებს
-  const count = useSelector((state: RootState) => state.counter.value)
-  const isLoading = useSelector((state: RootState) => state.counter.isLoading)
-  const users = useSelector((state: RootState) => state.counter.users)
-  const error = useSelector((state: RootState) => state.counter.error)
+export function User() {
+  const { error, isLoading, users, count } = useAppSelector(
+    (state) => state.userReducer
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    dispatch(fetchUsers())
-  }, [dispatch]) 
+    dispatch(fetchUsers());
+  }, []);
 
-  if (isLoading) return <h1>Loading...</h1>
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <div>
@@ -29,14 +27,20 @@ export function Counter() {
       ))}
       <div>
         {error && <h1>{error}</h1>}
-        <button aria-label="Increment value" onClick={() => dispatch(increment())}>
+        <button
+          aria-label="Increment value"
+          onClick={() => dispatch(increment())}
+        >
           Increment
         </button>
-        <span>{count}</span>
-        <button aria-label="Decrement value" onClick={() => dispatch(decrement())}>
+        <h2>{count}</h2>
+        <button
+          aria-label="Decrement value"
+          onClick={() => dispatch(decrement())}
+        >
           Decrement
         </button>
       </div>
     </div>
-  )
+  );
 }

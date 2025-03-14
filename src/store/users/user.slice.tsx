@@ -1,53 +1,51 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { fetchUsers } from "./action";
+import { IUser } from "../../interfaces/user";
 
-export interface User {
-  id: string;
-  email: string;
-}
-
-export interface CounterState {
-  value: number;
-  users: User[];
+interface IUserState {
+  users: IUser[];
   isLoading: boolean;
   error: string | null;
+  count: number;
 }
 
-const initialState: CounterState = {
-  value: 0,
+const initialState: IUserState = {
+  count: 0,
   users: [],
   isLoading: false,
   error: null,
 };
 
-export const counterSlice = createSlice({
-  name: "counter",
+export const userSlice = createSlice({
+  name: "user",
   initialState,
   reducers: {
     increment: (state) => {
-      state.value += 1;
+      state.count += 1;
     },
     decrement: (state) => {
-      state.value -= 1;
+      state.count -= 1;
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchUsers.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
+    builder.addCase(
+      fetchUsers.fulfilled,
+      (state: IUserState, action: PayloadAction<IUser[]>) => {
         state.isLoading = false;
         state.users = action.payload;
         state.error = null;
-      })
-      .addCase(fetchUsers.rejected, (state, action) => {
+      }
+    ),
+      builder.addCase(fetchUsers.pending, (state: IUserState) => {
+        state.isLoading = true;
+      }),
+      builder.addCase(fetchUsers.rejected, (state: IUserState, action) => {
         state.isLoading = false;
-        state.error = action.error.message || "Failed to fetch users"; 
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { increment, decrement } = counterSlice.actions;
+export const { increment, decrement } = userSlice.actions;
 
-export default counterSlice.reducer;
+export default userSlice.reducer;
